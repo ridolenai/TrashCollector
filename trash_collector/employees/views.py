@@ -11,9 +11,7 @@ from .models import Employee
 # Create your views here.
 @login_required
 def index(request):
-    # This line will get the Customer model from the other app, it can now be used to query the db for Customers
-    # logged= apps.get_model('customers.Customer')
-    # return render(request, 'employees/index.html')
+
     logged_in_user = request.user
     try:
         logged_in_employee = Employee.objects.get(user = logged_in_user)
@@ -23,20 +21,22 @@ def index(request):
             'logged_in_employee':logged_in_employee,
             'today':today
         }
+        return render(request, 'employees/index.html', context)
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse('employees:create'))
+    
 
 @login_required
 def create(request):
     logged_in_user = request.user
     if request.method == "POST":
         name_from_form = request.POST.get('name')
-        address_from_form = request.POST.get('address')
-        new_employee = Employee(name=name_from_form, user=logged_in_user, address=address_from_form)
+        # address_from_form = request.POST.get('address')
+        new_employee = Employee(name=name_from_form, user=logged_in_user)
         new_employee.save()
-        return HttpResponseRedirect(reverse('customers:index'))
+        return HttpResponseRedirect(reverse('employees:index'))
     else:
-        return render(request, 'customers/create.html')
+        return render(request, 'employees/create.html')
 
 @login_required
 def edit_profile(request):
@@ -44,9 +44,9 @@ def edit_profile(request):
     logged_in_employee = Employee.objects.get(user=logged_in_user)
     if request.method == "POST":
         name_from_form = request.POST.get('name')
-        address_from_form = request.POST.get('address')
+        # address_from_form = request.POST.get('address')
         logged_in_employee.name = name_from_form
-        logged_in_employee.address = address_from_form
+        # logged_in_employee.address = address_from_form
         logged_in_employee.save()
         return HttpResponseRedirect(reverse('employees:index'))
     else:
