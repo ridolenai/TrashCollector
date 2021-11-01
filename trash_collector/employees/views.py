@@ -5,8 +5,8 @@ from django.apps import apps
 from django.urls import reverse
 from datetime import date
 from django.core.exceptions import ObjectDoesNotExist
-from trash_collector.employees.models import Employee
-
+from django.contrib.auth.decorators import login_required
+from .models import Employee
 
 # Create your views here.
 @login_required
@@ -24,7 +24,7 @@ def index(request):
             'today':today
         }
     except ObjectDoesNotExist:
-        return HttpResponseRedirect(reverse('employee:create'))
+        return HttpResponseRedirect(reverse('employees:create'))
 
 @login_required
 def create(request):
@@ -32,9 +32,7 @@ def create(request):
     if request.method == "POST":
         name_from_form = request.POST.get('name')
         address_from_form = request.POST.get('address')
-        zip_from_form = request.POST.get('zip_code')
-        weekly_from_form = request.POST.get('weekly_pickup')
-        new_employee = Employee(name=name_from_form, user=logged_in_user, address=address_from_form, zip_code=zip_from_form, weekly_pickup=weekly_from_form)
+        new_employee = Employee(name=name_from_form, user=logged_in_user, address=address_from_form)
         new_employee.save()
         return HttpResponseRedirect(reverse('customers:index'))
     else:
@@ -44,15 +42,11 @@ def create(request):
 def edit_profile(request):
     logged_in_user = request.user
     logged_in_employee = Employee.objects.get(user=logged_in_user)
-    if request.method == "Post":
+    if request.method == "POST":
         name_from_form = request.POST.get('name')
         address_from_form = request.POST.get('address')
-        zip_from_form = request.POST.get('zip_code')
-        weekly_pickup_from_form = request.POST.get('weekly')
         logged_in_employee.name = name_from_form
         logged_in_employee.address = address_from_form
-        logged_in_employee.zip_code = zip_from_form
-        logged_in_employee.weekly_pickup = weekly_pickup_from_form
         logged_in_employee.save()
         return HttpResponseRedirect(reverse('employees:index'))
     else:
