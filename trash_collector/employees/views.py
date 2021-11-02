@@ -7,7 +7,7 @@ from datetime import date
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from .models import Employee
-
+import customers
 # Create your views here.
 @login_required
 def index(request):
@@ -54,4 +54,12 @@ def edit_profile(request):
             'logged_in_employee': logged_in_employee
         }
         return render(request, 'employees/edit_profile.html', context)
+
+@login_required
+def daily_search(request):
+    logged_in_user = request.user
+    logged_in_employee = Employee.objects.get(user=logged_in_user)
+    daily_list = customers.objects.filter(zip_code = logged_in_employee.zip_code)
+    return daily_list
+
 
