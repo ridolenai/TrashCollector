@@ -32,7 +32,7 @@ def index(request):
         good_standing = local_customers.exclude(suspend_end__gt = today_date, suspend_start__lt = today_date) 
         pick_up = good_standing.exclude(date_of_last_pickup = today_date)
         needy_customers = pick_up.filter(weekly_pickup = weekday_name) | pick_up.filter(one_time_pickup = today_date)
-
+        
         context = {
             'logged_in_employee' : logged_in_employee,
             'today_date' : today_date,
@@ -53,8 +53,8 @@ def create(request):
     logged_in_user = request.user
     if request.method == "POST":
         name_from_form = request.POST.get('name')
-        # address_from_form = request.POST.get('address')
-        new_employee = Employee(name=name_from_form, user=logged_in_user)
+        zip_code = request.POST.get('zip_code')
+        new_employee = Employee(name=name_from_form, user=logged_in_user, zip_code = zip_code)
         new_employee.save()
         return HttpResponseRedirect(reverse('employees:index'))
     else:
@@ -69,6 +69,7 @@ def edit_profile(request):
         # address_from_form = request.POST.get('address')
         logged_in_employee.name = name_from_form
         # logged_in_employee.address = address_from_form
+        logged_in_employee.zip_code = request.POST.get('zip_code')
         logged_in_employee.save()
         return HttpResponseRedirect(reverse('employees:index'))
     else:
@@ -85,3 +86,8 @@ def daily_search(request):
     return daily_list
 
 
+@login_required
+def confirm_pickup(request):
+    today_date = date.today()
+    date_of_last_pickup = today_date
+    

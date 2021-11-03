@@ -10,10 +10,11 @@
     You have these pickups scheduled for today: 
     <ul>
     {% for client in needy_customers %}
-      <li> {{ client.address }}  {{ client.name }} </li>
+      <li> <button type = "button" class = "btn btn link">{{ client.name }}  {{ client.address }} </button></li><br />
    
     {% endfor %}
     </ul>
+    {{customers}}
   {% else %}
     <p>You are at the employee index, but you are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a>
