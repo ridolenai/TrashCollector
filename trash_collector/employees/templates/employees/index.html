@@ -7,8 +7,13 @@
     Hello Employee {{ user.username }}!
     <br />
     <br />
-    
-    
+    You have these pickups scheduled for today: 
+    <ul>
+    {% for client in needy_customers %}
+      <li> {{ client.address }}  {{ client.name }} </li>
+   
+    {% endfor %}
+    </ul>
   {% else %}
     <p>You are at the employee index, but you are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a>

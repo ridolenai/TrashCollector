@@ -3,24 +3,46 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.apps import apps
 from django.urls import reverse
-from datetime import date
+from datetime import date, datetime
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from .models import Employee
 import customers
+
+
 # Create your views here.
+
+
+def get_day():
+    day_of_week = datetime.now()
+    return date.weekday(day_of_week)
+    
 @login_required
 def index(request):
-
+    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     logged_in_user = request.user
     try:
         logged_in_employee = Employee.objects.get(user = logged_in_user)
-        today = date.today()
+        Customer = apps.get_model('customers.Customer')
+        today_date = date.today() #gets today's date
+        day_index = get_day() #gets today's day
+        weekday_name = days[day_index]
+
+        local_customers = Customer.objects.filter(zip_code = logged_in_employee.zip_code)
+        good_standing = local_customers.exclude(suspend_end__gt = today_date, suspend_start__lt = today_date) 
+        pick_up = good_standing.exclude(date_of_last_pickup = today_date)
+        needy_customers = pick_up.filter(weekly_pickup = weekday_name) | pick_up.filter(one_time_pickup = today_date)
 
         context = {
-            'logged_in_employee':logged_in_employee,
-            'today':today
+            'logged_in_employee' : logged_in_employee,
+            'today_date' : today_date,
+            'local_customers': local_customers,
+            'good_standing' : good_standing,
+            'pick_up' : pick_up,
+            'needy_customers' : needy_customers
         }
+        
+        
         return render(request, 'employees/index.html', context)
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse('employees:create'))
