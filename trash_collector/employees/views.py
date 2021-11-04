@@ -87,7 +87,24 @@ def daily_search(request):
 
 
 @login_required
-def confirm_pickup(request):
+def confirm_pickup(request, id):
+    Customer = apps.get_model('customers.Customer')
+    employee = request.user
     today_date = date.today()
-    date_of_last_pickup = today_date
+    customer_today = Customer.objects.get(pk = id)
+    try:
+        customer_today.balance += 20
+        customer_today.date_of_last_pickup = today_date
+        customer_today.save()
+
+        context = {
+            'employee' : employee,
+            'today_date' : today_date,
+            'customer_balance' : customer_today.balance,
+            'customer_pickup' : customer_today.date_of_last_pickup
+        }
+        return render(request, 'employees/index.html', context)
+    except:
+        return HttpResponseRedirect(reverse('employees:create'))
+
     

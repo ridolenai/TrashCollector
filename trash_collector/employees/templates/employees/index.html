@@ -10,8 +10,7 @@
     You have these pickups scheduled for today: 
     <ul>
     {% for client in needy_customers %}
-      <li> 
-      <a href = "Customers.balance += 20" class = "btn btn link"> Name: {{ client.name }} <br/> Address: {{ client.address }} </a></li><br />
+      <li> <a href = "{% url 'employees:confirm_pickup' client.id %}" method = "post"><class = "btn btn link"> Name: {{ client.name }} <br/> Address: {{ client.address }} <br/> Current Balance: ${{client.balance}} </a></li><br />
     {% endfor %}
     </ul>
   {% else %}
