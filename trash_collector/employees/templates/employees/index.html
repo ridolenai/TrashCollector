@@ -18,7 +18,7 @@ days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     
 
     <form action="{% url 'employees:daily_filter'  %}" method = "POST">
-      
+      {% csrf_token %}
       <label for = "selected_day">Choose a Day to Filter Pickups</label>
       <select name = "options" id = "option">
         <option value = "Monday">Monday</option> 

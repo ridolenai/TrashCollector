@@ -107,7 +107,7 @@ def confirm_pickup(request, id):
 
 
 def daily_filter(request):
-    
+    selected_day = ''
     try:
         logged_in_user = request.user
         logged_in_employee = Employee.objects.get(user = logged_in_user)
