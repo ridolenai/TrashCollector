@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import login_required
 from .models import Employee
 import customers
 
-
 # Create your views here.
 
 
@@ -66,9 +65,7 @@ def edit_profile(request):
     logged_in_employee = Employee.objects.get(user=logged_in_user)
     if request.method == "POST":
         name_from_form = request.POST.get('name')
-        # address_from_form = request.POST.get('address')
         logged_in_employee.name = name_from_form
-        # logged_in_employee.address = address_from_form
         logged_in_employee.zip_code = request.POST.get('zip_code')
         logged_in_employee.save()
         return HttpResponseRedirect(reverse('employees:index'))
@@ -92,6 +89,7 @@ def confirm_pickup(request, id):
     employee = request.user
     today_date = date.today()
     customer_today = Customer.objects.get(pk = id)
+    
     try:
         customer_today.balance += 20
         customer_today.date_of_last_pickup = today_date
@@ -106,5 +104,29 @@ def confirm_pickup(request, id):
         return render(request, 'employees/index.html', context)
     except:
         return HttpResponseRedirect(reverse('employees:create'))
+
+
+def daily_filter(request):
+    
+    try:
+        logged_in_user = request.user
+        logged_in_employee = Employee.objects.get(user = logged_in_user)
+        Customer = apps.get_model('customers.Customer')
+        local_customers = Customer.objects.filter(zip_code = logged_in_employee.zip_code)
+        pick_up_day = local_customers.filter(weekly_pickup = selected_day ) 
+
+        context = {
+            'pick_up_day' : pick_up_day,
+            'logged_in_user' : logged_in_user,
+            'logged_in_employee' : logged_in_employee,
+            'local_customers' : local_customers
+        }
+
+        return render (request, 'employees/daily_filter.html', context)
+    except:
+        return HttpResponseRedirect(reverse('employees:daily_filter'))
+    
+    
+    
 
     

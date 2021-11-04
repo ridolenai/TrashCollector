@@ -1,0 +1,21 @@
+{% extends 'employees\employee_base.html' %}
+
+{% block title %} Filtered by Day {% endblock %}
+
+
+{% block content %}
+{% if user.is_authenticated %}
+  Hello {{ user.username }}<br />
+  These customers have a regularly scheduled pickup for {{pick_up_day}}.<br />
+  <li>
+      {% for customer in pick_up_day %}
+        Name:  {{ customer.name }}   Address:  {{customer.address}} <br/>
+      {% endfor %}
+  </li>
+
+  <a href="{% url 'employee:index' %}">This link brings you to today's listings.</a>
+  
+{% else %}
+  
+{% endif %}
+{% endblock %}

@@ -1,18 +1,36 @@
 {% extends 'employees\employee_base.html' %}
 
 {% block title %}{% block header %} Employee Home {% endblock %}{% endblock %}
-
+days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 {% block content %}
   {% if user.is_authenticated %}
+    
     Hello Employee {{ user.username }}!
     <br />
     <br />
     You have these pickups scheduled for today: 
     <ul>
     {% for client in needy_customers %}
-      <li> <a href = "{% url 'employees:confirm_pickup' client.id %}" method = "post"><class = "btn btn link"> Name: {{ client.name }} <br/> Address: {{ client.address }} <br/> Current Balance: ${{client.balance}} </a></li><br />
+      <li> <a href = "{% url 'employees:confirm_pickup' client.id %}" method = "POST"><class = "btn btn link"> Name: {{ client.name }} <br/> Address: {{ client.address }} <br/> Current Balance: ${{client.balance}} </a></li><br />
     {% endfor %}
     </ul>
+
+    
+
+    <form action="{% url 'employees:daily_filter'  %}" method = "POST">
+      
+      <label for = "selected_day">Choose a Day to Filter Pickups</label>
+      <select name = "options" id = "option">
+        <option value = "Monday">Monday</option> 
+        <option value = "Tuesday">Tuesday</option>
+        <option value = "Wednesday">Wednesday</option>
+        <option value = "Thursday">Thursday</option>
+        <option value = "Friday">Friday</option>
+      </select><br/>
+      <input type = "submit" value = "Submit">
+    </form>
+
+
   {% else %}
     <p>You are at the employee index, but you are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a>
