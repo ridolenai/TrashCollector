@@ -1,6 +1,6 @@
 {% extends 'employees\employee_base.html' %}
 
-{% block title %}{% block header %} Employee Home {% endblock %}{% endblock %}
+{% block header %} Employee Home {% endblock %}
 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 {% block content %}
   {% if user.is_authenticated %}
@@ -11,7 +11,7 @@ days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     You have these pickups scheduled for today: 
     <ul>
     {% for client in needy_customers %}
-      <li> <a href = "{% url 'employees:confirm_pickup' client.id %}" method = "POST"><class = "btn btn link"> Name: {{ client.name }} <br/> Address: {{ client.address }} <br/> Current Balance: ${{client.balance}} </a></li><br />
+      <li> <a href = "{% url 'employees:confirm_pickup' client.id %}" method = "POST"> <class = "btn btn link"> Name: {{ client.name }} <br/> Address: {{ client.address }} <br/> Current Balance: ${{client.balance}} </a></li><br />
     {% endfor %}
     </ul>
 

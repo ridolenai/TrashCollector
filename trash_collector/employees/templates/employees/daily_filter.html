@@ -2,19 +2,17 @@
 
 {% block title %} Filtered by Day {% endblock %}
 
-
 {% block content %}
 {% if user.is_authenticated %}
-  Hello {{ user.username }}<br />
   These customers have a regularly scheduled pickup for {{pick_up_day}}.<br />
-  <li>
-      {% for customer in pick_up_day %}
-        Name:  {{ customer.name }}   Address:  {{customer.address}} <br/>
-      {% endfor %}
-  </li>
+  <ul>
+  {% for customer in pick_up_day %}
+    <li> <a href = "{% url 'employees:daily_filter' customer.pick_up_day %}" method = "POST"> Name:  {{ customer.name }}   Address:  {{customer.address}} </a></li> <br/>
+    
+  </ul>
 
-  <a href="{% url 'employee:index' %}">This link brings you to today's listings.</a>
-  
+  <a href="{%  'employee/index.html' %}">This link brings you to today's listings.</a>
+  {% endfor %}
 {% else %}
   
 {% endif %}

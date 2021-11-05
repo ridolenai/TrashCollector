@@ -106,7 +106,7 @@ def confirm_pickup(request, id):
         return HttpResponseRedirect(reverse('employees:create'))
 
 
-def daily_filter(request):
+def daily_filter(request, pick_up_day):
     selected_day = ''
     try:
         logged_in_user = request.user
@@ -117,9 +117,7 @@ def daily_filter(request):
 
         context = {
             'pick_up_day' : pick_up_day,
-            'logged_in_user' : logged_in_user,
-            'logged_in_employee' : logged_in_employee,
-            'local_customers' : local_customers
+            
         }
 
         return render (request, 'employees/daily_filter.html', context)
